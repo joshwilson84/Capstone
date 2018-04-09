@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import uuid from 'uuid';
 import $ from 'jquery';
+import { pseudoRandomBytes } from 'crypto';
 
 class AddItem extends Component {
   constructor(){
     super();
     this.state={
+      newItem:{},
+      newApi:{}
 
     }
   }
@@ -20,7 +23,7 @@ class AddItem extends Component {
 
 
   handleSubmit(e){
-    e.preventDefault();
+    
     if(this.refs.note.value === ''){
       alert("Submission cannot be blank")
 
@@ -28,41 +31,36 @@ class AddItem extends Component {
       alert("Submission cannot be blank")
 
     }else{
-      $.ajax({
-          url: 'http://api.walmartlabs.com/v1/items?apiKey=kck6cj86my363fghv43rfd7u&upc=035000521019',
+      this.setState({
+        newItem: {
+          id: uuid.v4(),
+          category: this.refs.category.value,
+          date: this.refs.date.value,
+          note: this.refs.note.value,
+          upccode: this.refs.upccode.value
+        }}),
+        $.ajax({
+        url: 'http://api.walmartlabs.com/v1/items?apiKey=kck6cj86my363fghv43rfd7u&upc=035000521019',
           dataType: 'jsonp',
-          //cache: false,
-          //crossDomain: true,
-          headers:(
-              'Access-Control-Allow-Headers: x-requested-with'
-          ),
-          //headers: Access-Control-Request-Headers: x-requested-with
-          success: function(data){
+          success: function (data) {
             let parData = data.items
-            console.log(this.state);
-            },
-          error: function(xhr, status, err){
+            this.setState({ newApi: parData }, function () {
+              Object.assign(this.state.newItem, this.state.newApi),
+              this.props.addAllItems(this.state.newItem),
+              console.log(this.state.addAllItems)
+            });
+          }.bind(this),
+          error: function (xhr, status, err) {
             console.log(err);
           }
-        }),
-        function(){
-          this.props.apiitem(this.state.data)
-        }.bind(this),
-
-
-
-
-          this.setState({newItem:{
-            id: uuid.v4(),
-            category: this.refs.category.value,
-            date: this.refs.date.value,
-            note: this.refs.note.value,
-            upccode: this.refs.upccode.value
-
-          }})
-        }.bind(this);
+        })
       }
-}
+
+    e.preventDefault();
+  }; 
+  
+
+
 
   render() {
     let categoryOptions = this.props.categories.map(category => {

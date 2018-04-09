@@ -12,7 +12,7 @@ class Tracker extends Component {
     let trackerItems;
     if (this.props.trackedItems) {
       trackerItems = this.props.trackedItems.map(trackedItem =>{
-          //console.log(trackedItem);
+          console.log(trackedItem);
           return(
             <TrackerItems onDelete={this.deletetrackedItem.bind(this)} key={trackedItem.id} trackedItem={trackedItem} />
           )

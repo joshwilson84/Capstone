@@ -57,11 +57,9 @@ class App extends Component {
   }
 
 
-  handleAddItem(additem, apiitem){
+  handleAddItem(trackedItem){
     let trackedItems = this.state.trackedItems;
-    let merged = $.extend(additem, apiitem);
-    trackedItems.push(merged);
-    console.log(merged);
+    trackedItems.push(trackedItem);
     this.setState({trackedItems: trackedItems});
   }
   handleDeleteItem(id){
@@ -74,7 +72,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-       <AddItem  additem = {this.handleAddItem.bind(this)} />
+       <AddItem  addAllItems = {this.handleAddItem.bind(this)} />
        <Tracker trackedItems={this.state.trackedItems} onDelete={this.handleDeleteItem.bind(this)} />
 
       </div>
