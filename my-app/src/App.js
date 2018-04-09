@@ -19,7 +19,7 @@ class App extends Component {
 
   /*getItems(){
     $.ajax({
-      url: 'http://api.walmartlabs.com/v1/items?apiKey=kck6cj86my363fghv43rfd7u&upc='+'{newItem.upc}',
+      url: 'http://api.walmartlabs.com/v1/items?apiKey=kck6cj86my363fghv43rfd7u&upc=035000521019',
       dataType: 'jsonp',
       //cache: false,
       //crossDomain: true,
@@ -51,10 +51,10 @@ class App extends Component {
 
   }
 
-  componentDidMount(){
+  /*componentDidMount(){
     this.getTrackedItems();
 
-  }
+  }*/
 
 
   handleAddItem(trackedItem){
@@ -69,10 +69,12 @@ class App extends Component {
     this.setState({trackedItems: trackedItems});
   }
 
+
+
   render() {
     return (
       <div className="App">
-       <AddItem  addAllItems = {this.handleAddItem.bind(this)} />
+       <AddItem  addItem = {this.handleAddItem.bind(this)} />
        <Tracker trackedItems={this.state.trackedItems} onDelete={this.handleDeleteItem.bind(this)} />
 
       </div>

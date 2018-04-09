@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import uuid from 'uuid';
 import $ from 'jquery';
-import { pseudoRandomBytes } from 'crypto';
 
 class AddItem extends Component {
   constructor(){
     super();
     this.state={
-      newItem:{},
-      newApi:{}
+      newItem:{}
 
     }
   }
@@ -23,6 +21,7 @@ class AddItem extends Component {
 
 
   handleSubmit(e){
+    e.preventDefault();
     
     if(this.refs.note.value === ''){
       alert("Submission cannot be blank")
@@ -31,32 +30,60 @@ class AddItem extends Component {
       alert("Submission cannot be blank")
 
     }else{
-      this.setState({
-        newItem: {
-          id: uuid.v4(),
-          category: this.refs.category.value,
-          date: this.refs.date.value,
-          note: this.refs.note.value,
-          upccode: this.refs.upccode.value
-        }}),
-        $.ajax({
+      $.ajax({
         url: 'http://api.walmartlabs.com/v1/items?apiKey=kck6cj86my363fghv43rfd7u&upc=035000521019',
-          dataType: 'jsonp',
-          success: function (data) {
-            let parData = data.items
-            this.setState({ newApi: parData }, function () {
-              Object.assign(this.state.newItem, this.state.newApi),
-              this.props.addAllItems(this.state.newItem),
-              console.log(this.state.addAllItems)
-            });
-          }.bind(this),
-          error: function (xhr, status, err) {
-            console.log(err);
-          }
-        })
+        dataType: 'jsonp',
+        cache: false,
+        //crossDomain: true,
+        headers: (
+          'Access-Control-Allow-Headers: x-requested-with'
+        ),
+        //headers: Access-Control-Request-Headers: x-requested-with
+        success: function (data) {
+          let parData = data.items
+          parData.push(this.state.newItem);
+          var resultObject = parData.reduce(function (result, currentObject) {
+            for (var key in currentObject) {
+              if (currentObject.hasOwnProperty(key)) {
+                result[key] = currentObject[key];
+              }
+            }
+            return result;
+          }, {});
+
+          console.log(resultObject);
+          //let addItem = resultObject.props
+          let object1 = this.state.resultObject;
+          let addItem=this.props.object1;
+          console.log(this.props.addItem);
+        
+
+        }.bind(this),
+        error: function (xhr, status, err) {
+          console.log(err);
+        },
+      }),
+
+        this.setState({
+          newItem: {
+            id: uuid.v4(),
+            category: this.refs.category.value,
+            date: this.refs.date.value,
+            note: this.refs.note.value,
+            upccode: this.refs.upccode.value,
+          }})
+
+
+
+
+
+
+       
+
+
       }
 
-    e.preventDefault();
+    
   }; 
   
 
@@ -98,5 +125,7 @@ class AddItem extends Component {
 
   }
 }
+
+
 
 export default AddItem;
