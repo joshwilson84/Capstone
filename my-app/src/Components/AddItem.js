@@ -20,6 +20,9 @@ class AddItem extends Component {
 
 
 
+
+
+
   handleSubmit(e){
     e.preventDefault();
     
@@ -42,7 +45,7 @@ class AddItem extends Component {
         success: function (data) {
           let parData = data.items
           parData.push(this.state.newItem);
-          var resultObject = parData.reduce(function (result, currentObject) {
+          var newItem = parData.reduce(function (result, currentObject) {
             for (var key in currentObject) {
               if (currentObject.hasOwnProperty(key)) {
                 result[key] = currentObject[key];
@@ -50,12 +53,11 @@ class AddItem extends Component {
             }
             return result;
           }, {});
+          this.setState({newItem:newItem})
+          this.props.addItem(this.state.newItem);
 
-          console.log(resultObject);
+          console.log(newItem);
           //let addItem = resultObject.props
-          let object1 = this.state.resultObject;
-          let addItem=this.props.object1;
-          console.log(this.props.addItem);
         
 
         }.bind(this),
@@ -81,10 +83,13 @@ class AddItem extends Component {
        
 
 
-      }
+         }
 
-    
   }; 
+
+ /* handleClick = () => {
+    this.refs.form.input().value = '';
+  }*/
   
 
 
@@ -103,7 +108,7 @@ class AddItem extends Component {
           </div>
           <div>
             <label>Date</label><br />
-            <input type="text" ref="date" />
+            <input type="text" ref="date"/>
           </div>
           <div>
             <label>Note</label><br />
@@ -115,7 +120,7 @@ class AddItem extends Component {
               {categoryOptions}
             </select>
           </div>
-          <input type="submit" value="Submit"/>
+          <input type="submit" value="Submit" onClick={this.handleClick}/>
 
         </form>
 
