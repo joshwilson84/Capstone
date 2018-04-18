@@ -9,9 +9,13 @@ class TrackerItems extends Component {
     return (
       <li className="TrackerItems">
         {this.props.trackedItem.category} - {this.props.trackedItem.upccode} - {this.props.trackedItem.note}
-         - {this.props.trackedItem.date} - {this.props.trackedItem.name}
+         - {this.props.trackedItem.date}
+         <br />  
+         {this.props.trackedItem.name}
          <br />
-         <img src={this.props.trackedItem.thumbnailImage}/>
+        <a href={this.props.trackedItem.addToCartUrl} target='_blank'> 
+          <img src={this.props.trackedItem.thumbnailImage}/>
+        </a>
          <br />
          <button href="#" onClick={this.deletetrackedItem.bind(this, this.props.trackedItem.id)}>Remove Item</button>
 

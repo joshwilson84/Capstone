@@ -25,24 +25,53 @@ class AddItem extends Component {
 
   handleSubmit(e){
     e.preventDefault();
+    var upc = $('#upc').val();
     
     if(this.refs.note.value === ''){
       alert("Submission cannot be blank")
 
     }else if(this.refs.date.value === ''){
       alert("Submission cannot be blank")
+    }else if(this.refs.upccode.value === ''){
+      this.setState({
+        newItem: {
+          id: uuid.v4(),
+          category: this.refs.category.value,
+          date: this.refs.date.value,
+          note: this.refs.note.value,
+          upccode: this.refs.upccode.value,
+        }}, function(){
+          this.props.addItem(this.state.newItem);
+
+        });
+      
 
     }else{
       $.ajax({
-        url: 'http://api.walmartlabs.com/v1/items?apiKey=kck6cj86my363fghv43rfd7u&upc=035000521019',
+        url: 'http://api.walmartlabs.com/v1/items?apiKey=kck6cj86my363fghv43rfd7u&upc='+upc,
         dataType: 'jsonp',
         cache: false,
         //crossDomain: true,
         headers: (
           'Access-Control-Allow-Headers: x-requested-with'
         ),
-        //headers: Access-Control-Request-Headers: x-requested-with
         success: function (data) {
+          console.log(data);
+          if(data.errors){
+            this.setState({
+              newItem: {
+                id: uuid.v4(),
+                category: this.refs.category.value,
+                date: this.refs.date.value,
+                note: this.refs.note.value,
+                upccode: "Sorry UPC couldn't be found",
+              }
+            }, function () {
+              this.props.addItem(this.state.newItem);
+
+            });
+            
+          }else{
           let parData = data.items
           parData.push(this.state.newItem);
           var newItem = parData.reduce(function (result, currentObject) {
@@ -60,7 +89,7 @@ class AddItem extends Component {
           //let addItem = resultObject.props
         
 
-        }.bind(this),
+        }}.bind(this),
         error: function (xhr, status, err) {
           console.log(err);
         },
@@ -72,8 +101,9 @@ class AddItem extends Component {
             category: this.refs.category.value,
             date: this.refs.date.value,
             note: this.refs.note.value,
-            upccode: this.refs.upccode.value,
+            upccode: this.refs.upccode.value
           }})
+
 
 
 
@@ -104,7 +134,7 @@ class AddItem extends Component {
         <form onSubmit={this.handleSubmit.bind(this)}>
           <div>
             <label>UPC code</label><br />
-            <input type="text" ref="upccode" />
+            <input type="text" ref="upccode" id="upc" />
           </div>
           <div>
             <label>Date</label><br />
